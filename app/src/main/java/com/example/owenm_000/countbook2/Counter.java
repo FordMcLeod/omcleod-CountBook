@@ -21,20 +21,16 @@ public class Counter implements CounterHandler {
         comment = "";
     }
 
-    public Counter(String name, int currValue, int initValue, Date lastEdit, String comment) {
+    public Counter(String name, int currValue, int initValue, String comment) {
         this.name = name;
         this.currValue = currValue;
         this.initValue = initValue;
-        this.lastEdit = lastEdit;
+        this.lastEdit = new Date();
         this.comment = comment;
     }
 
     public int getInitValue() {
         return initValue;
-    }
-
-    public Date getLastEdit() {
-        return lastEdit;
     }
 
     public String getComment() {
@@ -58,6 +54,6 @@ public class Counter implements CounterHandler {
 
     @Override
     public Date getDate() {
-        return new Date() ;
+        return this.lastEdit ;
     }
 }

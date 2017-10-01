@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
         for(int i=0;i<30;i++){
-            counters.add(new Counter(String.valueOf(i),i,5,new Date(),""));
+            counters.add(new Counter(String.valueOf(i),i,i+5,""));
         }
 
         // Define a new Adapter

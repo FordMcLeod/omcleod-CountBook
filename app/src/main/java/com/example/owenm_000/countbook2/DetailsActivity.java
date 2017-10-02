@@ -11,7 +11,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import org.w3c.dom.Text;
+
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.Reader;
 
 public class DetailsActivity extends AppCompatActivity {
 
@@ -33,7 +39,7 @@ public class DetailsActivity extends AppCompatActivity {
             final TextView date = (TextView) findViewById(R.id.date);
 
 
-            Intent intent = this.getIntent();
+            final Intent intent = this.getIntent();
             Bundle bundle = intent.getExtras();
             Counter counter = (Counter) bundle.getSerializable("item");
 
@@ -53,6 +59,14 @@ public class DetailsActivity extends AppCompatActivity {
                             Integer.parseInt(currVal.getText().toString()),
                             Integer.parseInt(initVal.getText().toString()),
                             comment.getText().toString());
+
+                    Gson gson = new Gson();
+                    String json = gson.toJson(counter);
+                    intent.putExtra("newCounter",json);
+                    setResult(RESULT_OK,intent);
+
+
+
 
                 }
 
@@ -98,7 +112,6 @@ public class DetailsActivity extends AppCompatActivity {
             });
 
         }
-
 
 }
 

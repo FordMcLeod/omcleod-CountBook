@@ -1,5 +1,6 @@
 package com.example.owenm_000.countbook2;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,16 +12,28 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
+
 
 public class MainActivity extends AppCompatActivity {
 
     ListView listView ;
     final int INIT_CODE = 1;
     final int UPDATE_CODE = 1;
+    final String FILENAME = "file.sav";
     public ArrayList<Counter> counters = new ArrayList<Counter>();;
+    public ArrayAdapter<Counter> adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,9 +54,9 @@ public class MainActivity extends AppCompatActivity {
                 "Android Example List View"
         };
 
-        for(int i=0;i<30;i++){
-            counters.add(new Counter(String.valueOf(i),i,i+5,""));
-        }
+      //  for(int i=0;i<30;i++){
+     //       counters.add(new Counter(String.valueOf(i),i,i+5,""));
+     //   }
 
         // Define a new Adapter
         // First parameter - Context
@@ -51,15 +64,11 @@ public class MainActivity extends AppCompatActivity {
         // Third parameter - ID of the TextView to which the data is written
         // Forth - the Array of data
 
-        ArrayAdapter<Counter> adapter = new ArrayAdapter<Counter>(this,
+        adapter = new ArrayAdapter<Counter>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, counters);
-
-
-        // Assign adapter to ListView
         listView.setAdapter(adapter);
 
-        // ListView Item Click Listener
-
+        updateScreen();
 
         button.setOnClickListener(new View.OnClickListener() {
 
@@ -109,8 +118,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //this.onActivityResult();
+        updateScreen();
+
     }
+
+
+        // Assign adapter to ListView
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent){
         try {
@@ -119,14 +132,14 @@ public class MainActivity extends AppCompatActivity {
             if (requestCode == INIT_CODE && resultCode == RESULT_OK) {
 
                 Gson gson = new Gson();
-                String gsonString = intent.getStringExtra("gsonCounter");
+                String gsonString = intent.getStringExtra("newCounter");
                 Counter newCounter = gson.fromJson(gsonString, Counter.class);
                 counters.add(newCounter);
                 updateScreen();
+
             } else if (requestCode == UPDATE_CODE && resultCode == RESULT_OK) {
 
                 Gson gson = new Gson();
-
 
                 String arrayIndex = intent.getStringExtra("arrayIndex");
                 String deleteCounter = intent.getStringExtra("delete");
@@ -146,7 +159,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateScreen() {
+        loadFromFile();
+        adapter.notifyDataSetChanged();
+
+    }
+
+    private void loadFromFile() {
+        try {
+            FileInputStream fis = openFileInput(FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<Counter>>() {}.getType();
+            counters = gson.fromJson(in,listType);
 
 
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            counters = new ArrayList<Counter>();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    private void saveInFile() {
+        try {
+            FileOutputStream fos = openFileOutput(FILENAME,
+                    Context.MODE_PRIVATE);
+            OutputStreamWriter writer = new OutputStreamWriter(fos);
+            Gson gson = new Gson();
+            gson.toJson(counters,writer);
+            writer.flush();
+
+            fos.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

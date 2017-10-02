@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -103,6 +104,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void counterData(){
+        TextView currVal = (TextView) findViewById(R.id.counterData);
+        currVal.setText("Number of counters:" + counters.size());
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent){
         try {
@@ -144,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
     private void refreshScreen() {
         saveInFile();
         adapter.notifyDataSetChanged();
+        counterData();
 
     }
 

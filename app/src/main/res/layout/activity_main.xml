@@ -16,5 +16,11 @@
         android:layout_height="wrap_content"
         android:text="Button" />
 
+    <TextView
+        android:id="@+id/counterData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CounterData" />
+
 
 </LinearLayout>

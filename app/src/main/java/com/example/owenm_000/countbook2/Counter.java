@@ -45,7 +45,7 @@ public class Counter implements CounterHandler {
 
     @Override
     public String toString() {
-        return (String) (this.lastEdit + "\n" +this.name) ;
+        return (String) (this.lastEdit + "\n" +this.name + "\n Count:" + this.currValue) ;
     }
 
     public String getName() {

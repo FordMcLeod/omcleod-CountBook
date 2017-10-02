@@ -118,8 +118,6 @@ public class MainActivity extends AppCompatActivity {
 
             if (requestCode == INIT_CODE && resultCode == RESULT_OK) {
 
-
-
                 Gson gson = new Gson();
                 String gsonString = intent.getStringExtra("newCounter");
                 Counter newCounter = gson.fromJson(gsonString, Counter.class);
@@ -151,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
         saveInFile();
         adapter.notifyDataSetChanged();
         counterData();
-
     }
 
     private void loadFromFile() {

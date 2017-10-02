@@ -50,8 +50,9 @@ public class MainActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, android.R.id.text1, counters);
         listView.setAdapter(adapter);
 
-        updateScreen();
+
         loadFromFile();
+        refreshScreen();
 
         button.setOnClickListener(new View.OnClickListener() {
 
@@ -85,10 +86,6 @@ public class MainActivity extends AppCompatActivity {
                 // ListView Clicked item value
                 Counter  itemValue    = (Counter) listView.getItemAtPosition(position);
 
-                //Show Alert
-                Toast.makeText(getApplicationContext(),
-                        "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_SHORT)
-                        .show();
 
             }
 
@@ -98,7 +95,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        updateScreen();
+        refreshScreen();
+        adapter = new ArrayAdapter<Counter>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, counters);
+        listView.setAdapter(adapter);
+        loadFromFile();
 
     }
 
@@ -108,13 +109,17 @@ public class MainActivity extends AppCompatActivity {
         try {
             super.onActivityResult(requestCode, resultCode, intent);
 
+
+
             if (requestCode == INIT_CODE && resultCode == RESULT_OK) {
+
+
 
                 Gson gson = new Gson();
                 String gsonString = intent.getStringExtra("newCounter");
                 Counter newCounter = gson.fromJson(gsonString, Counter.class);
                 counters.add(newCounter);
-                updateScreen();
+                refreshScreen();
 
             } else if (requestCode == UPDATE_CODE && resultCode == RESULT_OK) {
 
@@ -123,26 +128,19 @@ public class MainActivity extends AppCompatActivity {
                 Counter newCounter = gson.fromJson(gsonString, Counter.class);
                 if(newCounter == null){
                     counters.remove(currentCounter);
-                    updateScreen();
                 }
                 else{
                     counters.set(currentCounter, newCounter);
-                    updateScreen();
-
                 }
-                updateScreen();
+                refreshScreen();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
 
-    private void updateScreen() {
+    private void refreshScreen() {
         saveInFile();
         adapter.notifyDataSetChanged();
 
@@ -157,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
             ArrayList<Counter> check = new ArrayList<Counter>();
             counters = gson.fromJson(in,listType);
 
-            
+
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             counters = new ArrayList<Counter>();
@@ -176,8 +174,8 @@ public class MainActivity extends AppCompatActivity {
             Gson gson = new Gson();
             gson.toJson(counters,writer);
             writer.flush();
-
             fos.close();
+
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

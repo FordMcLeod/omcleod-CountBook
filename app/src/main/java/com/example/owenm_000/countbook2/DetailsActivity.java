@@ -67,9 +67,6 @@ public class DetailsActivity extends AppCompatActivity {
                     intent.putExtra("newCounter",json);
                     setResult(RESULT_OK,intent);
 
-
-
-
                 }
 
 

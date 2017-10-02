@@ -32,6 +32,8 @@ public class DetailsActivity extends AppCompatActivity {
             Button increment = (Button) findViewById(R.id.increment);
             Button decrement = (Button) findViewById(R.id.decrement);
             Button reset = (Button) findViewById(R.id.reset);
+            Button delete = (Button) findViewById(R.id.delete);
+
             final TextView name = (TextView) findViewById(R.id.name);
             final TextView currVal = (TextView) findViewById(R.id.currVal);
             final TextView initVal = (TextView) findViewById(R.id.initVal);
@@ -106,6 +108,20 @@ public class DetailsActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),"Cannot decrement below zero!",Toast.LENGTH_SHORT)
                                 .show();
                     }
+                }
+
+
+            });
+
+            delete.setOnClickListener(new View.OnClickListener() {
+
+                public void onClick(View v) {
+
+                    Gson gson = new Gson();
+                    Counter counter = null;
+                    String json = gson.toJson(counter);
+                    intent.putExtra("newCounter",counter);
+                    setResult(RESULT_OK,intent);
                 }
 
 

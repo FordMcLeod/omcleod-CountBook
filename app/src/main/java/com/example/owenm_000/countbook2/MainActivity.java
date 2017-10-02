@@ -30,10 +30,11 @@ public class MainActivity extends AppCompatActivity {
 
     ListView listView ;
     final int INIT_CODE = 1;
-    final int UPDATE_CODE = 1;
+    final int UPDATE_CODE = 2;
     final String FILENAME = "file.sav";
     public ArrayList<Counter> counters = new ArrayList<Counter>();;
     public ArrayAdapter<Counter> adapter;
+    private int currentCounter = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,26 +44,9 @@ public class MainActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.list);
         Intent intent;
 
-        // Defined Array values to show in ListView
-        String[] values = new String[] { "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View"
-        };
 
-      //  for(int i=0;i<30;i++){
-     //       counters.add(new Counter(String.valueOf(i),i,i+5,""));
-     //   }
+        loadFromFile();
 
-        // Define a new Adapter
-        // First parameter - Context
-        // Second parameter - Layout for the row
-        // Third parameter - ID of the TextView to which the data is written
-        // Forth - the Array of data
 
         adapter = new ArrayAdapter<Counter>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, counters);
@@ -94,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // ListView Clicked item index
                 int itemPosition     = position;
-
+                currentCounter = position;
                 Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("item", (Counter)listView.getItemAtPosition(position));
@@ -140,17 +124,14 @@ public class MainActivity extends AppCompatActivity {
             } else if (requestCode == UPDATE_CODE && resultCode == RESULT_OK) {
 
                 Gson gson = new Gson();
-
-                String arrayIndex = intent.getStringExtra("arrayIndex");
-                String deleteCounter = intent.getStringExtra("delete");
-                if (Boolean.parseBoolean(deleteCounter)) {
-                    counters.remove(Integer.parseInt(arrayIndex));
-                    updateScreen();
-                    return;
-                }
-                String gsonString = intent.getStringExtra("gsonCounter");
+                String gsonString = intent.getStringExtra("newCounter");
                 Counter newCounter = gson.fromJson(gsonString, Counter.class);
-                counters.set(Integer.parseInt(arrayIndex), newCounter);
+                if(newCounter == null){
+                    counters.remove(currentCounter);
+                }
+                else{
+                    counters.set(currentCounter, newCounter);
+                }
                 updateScreen();
             }
         } catch (Exception e) {
@@ -158,8 +139,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
     private void updateScreen() {
-        loadFromFile();
+        saveInFile();
         adapter.notifyDataSetChanged();
 
     }

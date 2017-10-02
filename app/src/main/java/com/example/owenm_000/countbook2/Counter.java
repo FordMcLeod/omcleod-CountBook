@@ -6,13 +6,19 @@ import java.util.Date;
  * Created by owenm_000 on 9/30/2017.
  */
 
+
+// Counter class which will represent a counter
+
 public class Counter implements CounterHandler {
+
+    // attributes
     private String name;
     private int currValue;
     private int initValue;
     private Date lastEdit;
     private String comment;
 
+    // Base constructor used for making a new Counter
     public Counter() {
         name ="";
         currValue = 0;
@@ -21,6 +27,8 @@ public class Counter implements CounterHandler {
         comment = "";
     }
 
+
+    // Constructor with inputs
     public Counter(String name, int currValue, int initValue, String comment) {
         this.name = name;
         this.currValue = currValue;
@@ -29,6 +37,8 @@ public class Counter implements CounterHandler {
         this.comment = comment;
     }
 
+
+    // Getters
     public int getInitValue() {
         return initValue;
     }
@@ -37,16 +47,6 @@ public class Counter implements CounterHandler {
         return comment;
     }
 
-    @Override
-    public int getValue() {
-
-        return currValue;
-    }
-
-    @Override
-    public String toString() {
-        return (String) (this.lastEdit + "\n" +this.name + "\n Count:" + this.currValue) ;
-    }
 
     public String getName() {
         return name;
@@ -56,4 +56,20 @@ public class Counter implements CounterHandler {
     public Date getDate() {
         return this.lastEdit ;
     }
+
+    @Override
+    public int getValue() {
+
+        return currValue;
+    }
+
+
+    // Utilized when printing to the screen
+    // In the future should be transitioned to the CounterHandler
+    // To seperate formatting and the underlying data
+    @Override
+    public String toString() {
+        return (String) (this.lastEdit + "\n" +this.name + "\n Count:" + this.currValue) ;
+    }
+
 }

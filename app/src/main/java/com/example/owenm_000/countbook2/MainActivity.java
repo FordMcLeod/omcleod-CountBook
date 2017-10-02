@@ -29,12 +29,20 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    // Initializng variables
     ListView listView ;
+
+    // Codes for startActivityResult()
     final int INIT_CODE = 1;
     final int UPDATE_CODE = 2;
+
+    // Initializing the .sav, arraylist and array adapter to use ListView
     final String FILENAME = "file.sav";
     public ArrayList<Counter> counters = new ArrayList<Counter>();;
     public ArrayAdapter<Counter> adapter;
+
+    // Indicates what the last selected counter position was, used for deletion
     private int currentCounter = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,23 +50,35 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button button = (Button) findViewById(R.id.button);
         // Get ListView object from xml
+
+        //Creating Listview
         listView = (ListView) findViewById(R.id.list);
         Intent intent;
 
-
+        //Initializing counters. stores the current counters
         counters = new ArrayList<Counter>();
+
+        // Initializing adapter, use to convert counters to ListView usable assets
         adapter = new ArrayAdapter<Counter>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, counters);
+
+        // Setting ListView's adapter
         listView.setAdapter(adapter);
 
-
+        //Loading any existing counters from file.sav
         loadFromFile();
+
+        //Calling refreshScreen which will save to file, inform adapter there is changes and update the counter counter
         refreshScreen();
 
+
+        // button which will start the DetailsActivity sending INIT_CODE to indicate that a new counter is being made
         button.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
                 setResult(RESULT_OK);
+
+                // Passing in a new counter to the details activity
                 Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("item", new Counter());
@@ -67,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        // listView item click listener,
+        // starts the DetailsActivity sending UPDATE_CODE to indicate that a counter is being edited
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -77,6 +100,8 @@ public class MainActivity extends AppCompatActivity {
                 // ListView Clicked item index
                 int itemPosition     = position;
                 currentCounter = position;
+
+                // Passing in the counter selected by the user
                 Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("item", (Counter)listView.getItemAtPosition(position));
@@ -93,6 +118,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //We need to Override onStart() b/c the ListView needs to be updated every time
+    // that the detailActivity Finishes and it goes back in the activity stack
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -104,17 +132,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //counterData(): Simple function to update a textview onscreen with the current number of counters
     private void counterData(){
         TextView currVal = (TextView) findViewById(R.id.counterData);
         currVal.setText("Number of counters:" + counters.size());
     }
 
     @Override
+
+    // onActivityResult: handler that is called when DetailsActivity finishes, as it was
+    //  started using startActivityForResult
     protected void onActivityResult(int requestCode, int resultCode, Intent intent){
         try {
             super.onActivityResult(requestCode, resultCode, intent);
-
-
+            // The requestCode indicates whether this DetailsActivity was for an existing counter
+            //  or a new counter
+            // Recieves the counter via GSON
 
             if (requestCode == INIT_CODE && resultCode == RESULT_OK) {
 
@@ -130,13 +163,18 @@ public class MainActivity extends AppCompatActivity {
                 String gsonString = intent.getStringExtra("newCounter");
                 Counter newCounter = gson.fromJson(gsonString, Counter.class);
 
+                // Expected case when the user hits delete, it sends a null counter back indicating to delete that counter
                 if(newCounter == null){
                     counters.remove(currentCounter);
                     adapter.notifyDataSetChanged();
                 }
+
+                // Otherwise update the counter with the newCounter values
                 else{
                     counters.set(currentCounter, newCounter);
                 }
+
+                //call to refresh screen
                 refreshScreen();
             }
         } catch (Exception e) {
@@ -146,12 +184,19 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void refreshScreen() {
+        //Saves to file.sav
         saveInFile();
+
+        //informs adapter there was an update to the data set
         adapter.notifyDataSetChanged();
+
+        //updates the number counter
         counterData();
     }
 
     private void loadFromFile() {
+
+        // Sourced from Lab3, written by me
         try {
             FileInputStream fis = openFileInput(FILENAME);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
@@ -174,6 +219,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveInFile() {
+
+        // Sourced from Lab3, written by me
         try {
             FileOutputStream fos = openFileOutput(FILENAME,
                     Context.MODE_PRIVATE);

@@ -28,12 +28,14 @@ public class DetailsActivity extends AppCompatActivity {
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_details);
+
+            // Creating objects corresponding to UI that will be change
+            // In the future I would implement this Acitivty in a cleaner way as this seems like an obscene number of objects
             Button saveButton = (Button) findViewById(R.id.saveButton);
             Button increment = (Button) findViewById(R.id.increment);
             Button decrement = (Button) findViewById(R.id.decrement);
             Button reset = (Button) findViewById(R.id.reset);
             Button delete = (Button) findViewById(R.id.delete);
-
             final TextView name = (TextView) findViewById(R.id.name);
             final TextView currVal = (TextView) findViewById(R.id.currVal);
             final TextView initVal = (TextView) findViewById(R.id.initVal);
@@ -41,10 +43,14 @@ public class DetailsActivity extends AppCompatActivity {
             final TextView date = (TextView) findViewById(R.id.date);
 
 
+
+            //getting intent that was passed to this from MainActivity, via a bundle
             final Intent intent = this.getIntent();
             Bundle bundle = intent.getExtras();
             Counter counter = (Counter) bundle.getSerializable("item");
 
+
+            //Filling in TextViews with current counter information
             name.setText(counter.getName());
             currVal.setText(String.valueOf(counter.getValue()));
             initVal.setText(String.valueOf(counter.getInitValue()));
@@ -53,7 +59,7 @@ public class DetailsActivity extends AppCompatActivity {
 
 
 
-
+            //On Clickm the save button will submit the current data as a string using GSON
             saveButton.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
@@ -72,6 +78,8 @@ public class DetailsActivity extends AppCompatActivity {
 
             });
 
+
+            // Increments by one
             increment.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
@@ -83,6 +91,7 @@ public class DetailsActivity extends AppCompatActivity {
 
             });
 
+            // Resets the counter to it's init val
             reset.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
@@ -94,6 +103,7 @@ public class DetailsActivity extends AppCompatActivity {
 
             });
 
+            // Decremnts by one can't go below zero, utilzies Toast to notify user if at 0
             decrement.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
@@ -110,6 +120,8 @@ public class DetailsActivity extends AppCompatActivity {
 
             });
 
+
+            // Deletes the counter, and passes back a null counter to MainActivty through GSON
             delete.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {

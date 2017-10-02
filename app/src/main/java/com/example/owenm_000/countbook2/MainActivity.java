@@ -45,14 +45,13 @@ public class MainActivity extends AppCompatActivity {
         Intent intent;
 
 
-        loadFromFile();
-
 
         adapter = new ArrayAdapter<Counter>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, counters);
         listView.setAdapter(adapter);
 
         updateScreen();
+        loadFromFile();
 
         button.setOnClickListener(new View.OnClickListener() {
 
@@ -66,9 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
-
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -106,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
         // Assign adapter to ListView
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent){
@@ -128,9 +123,12 @@ public class MainActivity extends AppCompatActivity {
                 Counter newCounter = gson.fromJson(gsonString, Counter.class);
                 if(newCounter == null){
                     counters.remove(currentCounter);
+                    updateScreen();
                 }
                 else{
                     counters.set(currentCounter, newCounter);
+                    updateScreen();
+
                 }
                 updateScreen();
             }
@@ -156,9 +154,10 @@ public class MainActivity extends AppCompatActivity {
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
             Gson gson = new Gson();
             Type listType = new TypeToken<ArrayList<Counter>>() {}.getType();
+            ArrayList<Counter> check = new ArrayList<Counter>();
             counters = gson.fromJson(in,listType);
 
-
+            
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             counters = new ArrayList<Counter>();

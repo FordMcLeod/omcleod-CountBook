@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -22,6 +23,9 @@ public class DetailsActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_details);
             Button saveButton = (Button) findViewById(R.id.saveButton);
+            Button increment = (Button) findViewById(R.id.increment);
+            Button decrement = (Button) findViewById(R.id.decrement);
+            Button reset = (Button) findViewById(R.id.reset);
             final TextView name = (TextView) findViewById(R.id.name);
             final TextView currVal = (TextView) findViewById(R.id.currVal);
             final TextView initVal = (TextView) findViewById(R.id.initVal);
@@ -31,7 +35,6 @@ public class DetailsActivity extends AppCompatActivity {
 
             Intent intent = this.getIntent();
             Bundle bundle = intent.getExtras();
-
             Counter counter = (Counter) bundle.getSerializable("item");
 
             name.setText(counter.getName());
@@ -56,6 +59,43 @@ public class DetailsActivity extends AppCompatActivity {
 
             });
 
+            increment.setOnClickListener(new View.OnClickListener() {
+
+                public void onClick(View v) {
+                    int val = Integer.parseInt(currVal.getText().toString());
+                    currVal.setText(String.valueOf(val + 1));
+
+                }
+
+
+            });
+
+            reset.setOnClickListener(new View.OnClickListener() {
+
+                public void onClick(View v) {
+                    int val = Integer.parseInt(initVal.getText().toString());
+                    currVal.setText(String.valueOf(val));
+
+                }
+
+
+            });
+
+            decrement.setOnClickListener(new View.OnClickListener() {
+
+                public void onClick(View v) {
+                    int val = Integer.parseInt(currVal.getText().toString());
+                    if(val>0) {
+                        currVal.setText(String.valueOf(val - 1));
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(),"Cannot decrement below zero!",Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                }
+
+
+            });
 
         }
 

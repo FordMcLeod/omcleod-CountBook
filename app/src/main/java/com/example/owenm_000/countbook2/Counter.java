@@ -17,7 +17,7 @@ public class Counter implements CounterHandler {
         name ="";
         currValue = 0;
         initValue=0;
-        lastEdit = getDate();
+        lastEdit = new Date();
         comment = "";
     }
 
